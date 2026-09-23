@@ -9,7 +9,8 @@ dubbing_mode = st.radio( "အလုပ်လုပ်မည့် ပုံစ�
 voice_option = st.selectbox( "အသံအမျိုးအစား ရွေးချယ်ပါ (သီဟ၊ နီလာ၊ ဘိုဘို):", ("သီဟ (Thiha)", "နီလာ (Nila)", "ဘိုဘို (BoBo)") )
 uploaded_file = st.file_uploader("၅ မိနစ်အောက် ဗီဒီယိုဖိုင် တင်ပါ (MP4, MOV, AVI):", type=["mp4", "mov", "avi"])
 if st.button ("ဗီဒီယို အလိုအလျောက် စတင်ဖန်တီးမည်") :
-    if not api_key: st.error ("ကျေးဇူးပြု၍ ဘေးဘောင် (Sidebar) တွင် AI API Key ထည့်သွင်းပေးပါရန်။") 
+    if not api_key: 
+        st.error ("ကျေးဇူးပြု၍ ဘေးဘောင် (Sidebar) တွင် AI API Key ထည့်သွင်းပေးပါရန်။") 
         elif uploaded_file is not None:
             os.makedirs("temp_dir", exist_ok=True)
             file_path = os.path.join("temp_dir", uploaded_file.name) 
