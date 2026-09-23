@@ -8,7 +8,12 @@ api_key = st.sidebar.text_input("AI API Key ထည့်ပါ:", type="password
 dubbing_mode = st.radio( "အလုပ်လုပ်မည့် ပုံစံကို ရွေးချယ်ပါ:", ( "1. မူရင်းအသံ မဖျောက်ဘဲ ဘာသာပြန်ချက် သက်သက် ပြန်ဆိုရန်", "2. မူရင်းအသံဖျောက်ပြီး ကိုယ်ကြိုက်တဲ့အသံဖြင့် အဆင့်ချင်း တကယ် အစားထိုးရန်" ) )
 voice_option = st.selectbox( "အသံအမျိုးအစား ရွေးချယ်ပါ (သီဟ၊ နီလာ၊ ဘိုဘို):", ("သီဟ (Thiha)", "နီလာ (Nila)", "ဘိုဘို (BoBo)") )
 uploaded_file = st.file_uploader("၅ မိနစ်အောက် ဗီဒီယိုဖိုင် တင်ပါ (MP4, MOV, AVI):", type=["mp4", "mov", "avi"])
-if st.button ("ဗီဒီယို အလိုအလျောက် စတင်ဖန်တီးမည်") : if not api_key: st.error ("ကျေးဇူးပြု၍ ဘေးဘောင် (Sidebar) တွင် AI API Key ထည့်သွင်းပေးပါရန်။") elif uploaded_file is not None: os.makedirs("temp_dir", exist_ok=True) file_path = os.path.join("temp_dir", uploaded_file.name) with open(file_path, "wb") as f: f.write(uploaded_file.getbuffer())
+if st.button ("ဗီဒီယို အလိုအလျောက် စတင်ဖန်တီးမည်") :
+    if not api_key: st.error ("ကျေးဇူးပြု၍ ဘေးဘောင် (Sidebar) တွင် AI API Key ထည့်သွင်းပေးပါရန်။") 
+        elif uploaded_file is not None:
+            os.makedirs("temp_dir", exist_ok=True)
+            file_path = os.path.join("temp_dir", uploaded_file.name) with open(file_path, "wb") 
+            as f: f.write(uploaded_file.getbuffer())
     if "1." in dubbing_mode:
         progress_bar = st.progress(0)
         status_text = st.empty()
