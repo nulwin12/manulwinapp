@@ -14,8 +14,8 @@ if st.button ("ဗီဒီယို အလိုအလျောက် စတင
     elif uploaded_file is not None:
             os.makedirs("temp_dir", exist_ok=True)
             file_path = os.path.join("temp_dir", uploaded_file.name) 
-            with open(file_path, "wb") 
-            as f: f.write(uploaded_file.getbuffer())
+            with open(file_path, "wb") as f:
+                f.write(uploaded_file.getbuffer())
     if "1." in dubbing_mode:
         progress_bar = st.progress(0)
         status_text = st.empty()
