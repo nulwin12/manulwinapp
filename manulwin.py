@@ -12,7 +12,8 @@ if st.button ("ဗီဒီယို အလိုအလျောက် စတင
     if not api_key: st.error ("ကျေးဇူးပြု၍ ဘေးဘောင် (Sidebar) တွင် AI API Key ထည့်သွင်းပေးပါရန်။") 
         elif uploaded_file is not None:
             os.makedirs("temp_dir", exist_ok=True)
-            file_path = os.path.join("temp_dir", uploaded_file.name) with open(file_path, "wb") 
+            file_path = os.path.join("temp_dir", uploaded_file.name) 
+            with open(file_path, "wb") 
             as f: f.write(uploaded_file.getbuffer())
     if "1." in dubbing_mode:
         progress_bar = st.progress(0)
