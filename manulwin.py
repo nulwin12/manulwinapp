@@ -11,7 +11,8 @@ uploaded_file = st.file_uploader("၅ မိနစ်အောက် ဗီဒ�
 if st.button ("ဗီဒီယို အလိုအလျောက် စတင်ဖန်တီးမည်") :
     if not api_key: 
         st.error ("ကျေးဇူးပြု၍ ဘေးဘောင် (Sidebar) တွင် AI API Key ထည့်သွင်းပေးပါရန်။") 
-        elif uploaded_file is not None:
+    elif:
+        if uploaded_file is not None:
             os.makedirs("temp_dir", exist_ok=True)
             file_path = os.path.join("temp_dir", uploaded_file.name) 
             with open(file_path, "wb") 
