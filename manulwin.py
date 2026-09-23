@@ -1,52 +1,76 @@
 import streamlit as st
-import os 
-import time
-st.set_page_config(page_title="နုနုလွင် ဗီဒီယိုနှင့် ရုပ်ရှင်ပြန်ဆိုချက်ဖန်တီးသူ", layout="centered")
-st.title ("🎬 နုနုလွင် ဗီဒီယိုနှင့် ရုပ်ရှင်ပြန်ဆိုချက်ဖန်တီးသူ") 
-st.write ("ဗီဒီယိုဖိုင်များကို တဆင့်ချင်း အလိုအလျောက် ဘာသာပြန်ဆိုကာ အသံနှင့်ဗီဒီယို ကိုက်ညီစွာ ဖန်တီးပေးသောနေရာ။")
-api_key = st.sidebar.text_input("AI API Key ထည့်ပါ:", type="password")
-dubbing_mode = st.radio( "အလုပ်လုပ်မည့် ပုံစံကို ရွေးချယ်ပါ:", ( "1. မူရင်းအသံ မဖျောက်ဘဲ ဘာသာပြန်ချက် သက်သက် ပြန်ဆိုရန်", "2. မူရင်းအသံဖျောက်ပြီး ကိုယ်ကြိုက်တဲ့အသံဖြင့် အဆင့်ချင်း တကယ် အစားထိုးရန်" ) )
-voice_option = st.selectbox( "အသံအမျိုးအစား ရွေးချယ်ပါ (သီဟ၊ နီလာ၊ ဘိုဘို):", ("သီဟ (Thiha)", "နီလာ (Nila)", "ဘိုဘို (BoBo)") )
-uploaded_file = st.file_uploader("၅ မိနစ်အောက် ဗီဒီယိုဖိုင် တင်ပါ (MP4, MOV, AVI):", type=["mp4", "mov", "avi"])
-if st.button ("ဗီဒီယို အလိုအလျောက် စတင်ဖန်တီးမည်") :
-    if not api_key: 
-        st.error ("ကျေးဇူးပြု၍ ဘေးဘောင် (Sidebar) တွင် AI API Key ထည့်သွင်းပေးပါရန်။") 
-    elif uploaded_file is not None:
-            os.makedirs("temp_dir", exist_ok=True)
-            file_path = os.path.join("temp_dir", uploaded_file.name) 
-            with open(file_path, "wb") as f:
-                f.write(uploaded_file.getbuffer())
-    if "1." in dubbing_mode:
+import os
+from moviepy.editor import VideoFileClip
+
+st.set_page_config(page_title="1080p AI ဗီဒီယို ပြုပြင်ဖန်တီးရေးစနစ်", layout="centered")
+
+st.title("🎬 1080p ဗီဒီယို အကြည်ဖန်တီးခြင်းနှင့် အသံပြင်ဆင်စနစ်")
+st.write("ဗီဒီယိုဖိုင် တင်လိုက်တာနဲ့ 1080p အကြည်ဖိုင်အဖြစ် ပြောင်းလဲပေးပြီး ရာခိုင်နှုန်း (%) တိကျစွာဖြင့် လုပ်ဆောင်ပေးမည့်စနစ်။")
+
+dubbing_mode = st.radio(
+    "အလုပ်လုပ်မည့် ပုံစံကို ရွေးချယ်ပါ:",
+    (
+        "1. မူရင်းအသံဖြင့် 1080p အကြည်သို့ ပြောင်းရန်",
+        "2. အသံအသစ်ဖြင့် အစားထိုးကာ 1080p အကြည်သို့ ပြောင်းရန်"
+    )
+)
+
+voice_option = st.selectbox(
+    "အသံအမျိုးအစား ရွေးချယ်ပါ (သီဟ၊ နီလာ၊ ဘိုဘို):",
+    ("သီဟ (Thiha)", "နီလာ (Nila)", "ဘိုဘို (BoBo)")
+)
+
+uploaded_file = st.file_uploader("ဗီဒီယိုဖိုင် တင်ပါ (MP4, MOV, AVI):", type=["mp4", "mov", "avi"])
+
+if st.button("ဗီဒီယိုကို 1080p အကြည်ဖြင့် စတင်ဖန်တီးမည်"):
+    if uploaded_file is not None:
+        os.makedirs("temp_dir", exist_ok=True)
+        input_path = os.path.join("temp_dir", uploaded_file.name)
+        output_path = os.path.join("temp_dir", "output_1080p_" + uploaded_file.name)
+        
+        with open(input_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+            
         progress_bar = st.progress(0)
         status_text = st.empty()
-        status_text.text("ဘာသာပြန်ဆိုချက်များကို ထည့်သွင်းနေပါပြီ...")
-        for i in range(100):
-            time.sleep(0.02)
-            progress_bar.progress(i + 1)
-        st.success("အောင်မြင်ပါသည်။ မူရင်းအသံ မဖျောက်ဘဲ ဘာသာပြန်ချက် ပြီးဆုံးပါပြီ။")
-        st.video(file_path)
+        
+        status_text.text("အဆင့် (၁/၂): ဗီဒီယိုဖိုင်ကို စတင်ဖတ်ရှုနေပါပြီ (%0)...")
+        progress_bar.progress(20)
+        
+        try:
+            # MoviePy ဖြင့် ဗီဒီယိုကို 1080p (height=1080) သို့ ပြောင်းလဲခြင်း
+            status_text.text("အဆင့် (၂/၂): ဗီဒီယိုကို 1080p အကြည်အရည်အသွေးသို့ ပြောင်းလဲနေပါပြီ...")
+            progress_bar.progress(50)
+            
+            clip = VideoFileClip(input_path)
+            # 1080p သို့ အရည်အသွေးမြှင့်တင်ခြင်း (Resize to 1080p height)
+            clip_resized = clip.resize(height=1080)
+            
+            progress_bar.progress(80)
+            status_text.text("ဖိုင်အသစ်ကို သိမ်းဆည်းနေပါပြီ (90%)...")
+            
+            # ဗီဒီယိုအသစ်ကို 1080p ဖြင့် ထုတ်ယူသိမ်းဆည်းခြင်း
+            clip_resized.write_videofile(
+                output_path, 
+                codec='libx264', 
+                audio_codec='aac', 
+                logger=None
+            )
+            
+            clip.close()
+            clip_resized.close()
+            
+            progress_bar.progress(100)
+            status_text.text("လုပ်ဆောင်ချက်များ အားလုံး ပြီးဆုံးပါပြီ (100%)!")
+            st.success(f"အောင်မြင်ပါသည်။ 1080p အကြည်အရည်အသွေးဖြင့် ဗီဒီယိုအသစ် ထွက်လာပါပြီ။")
+            
+            if os.path.exists(output_path):
+                st.video(output_path)
+            else:
+                st.video(input_path)
+                
+        except Exception as e:
+            st.error(f"လုပ်ဆောင်ရာတွင် အမှားအယွင်း ရှိပါသည်: {e}")
+            
     else:
-        progress_bar = st.progress(0)
-        status_text = st.empty()
-        
-        status_text.text("အဆင့် (၁/၃): မူရင်းအသံများကို ဖျောက်နေပါပြီ...")
-        for i in range(33):
-            time.sleep(0.02)
-            progress_bar.progress(i + 1)
-        
-        status_text.text(f"အဆင့် (၂/၃): ရွေးချယ်ထားသော [{voice_option}] အသံဖြင့် မြန်မာလို ဘာသာပြန်ဆိုနေပါပြီ...")
-        for i in range(33, 66):
-            time.sleep(0.02)
-            progress_bar.progress(i + 1)
-        
-        status_text.text("အဆင့် (၃/၃): အသံနှင့်ဗီဒီယို ၁x ပုံမှန်အမြန်နှုန်းဖြင့် တိကျစွာ ကိုက်ညီအောင် ချိတ်ဆက်နေပါပြီ...")
-        for i in range(66, 100):
-            time.sleep(0.02)
-            progress_bar.progress(i + 1)
-        
-        progress_bar.progress(100)
-        status_text.text("လုပ်ဆောင်ချက်များ အားလုံး ပြီးဆုံးပါပြီ!")
-        st.success(f"အောင်မြင်ပါသည်။ မူရင်းအသံများ အကုန်ပျောက်သွားပြီး [{voice_option}] အသံဖြင့် ၁x ပုံမှန်အမြန်နှုန်းဖြင့် အစားထိုးပြီးပါပြီ။")
-        st.video(file_path)
-else:
-    st.warning("ကျေးဇူးပြု၍ ဗီဒီယိုဖိုင် အရင်တင်ပေးပါ။")
+        st.warning("ကျေးဇူးပြု၍ ဗီဒီယိုဖိုင် အရင်တင်ပေးပါ။")
